@@ -12,7 +12,7 @@ router.post('/signup',async(req,res)=>{
         //creating a new User
         const newUser=new User(data)
 
-        //saving the data
+        //saving the data   
         const response=await newUser.save()
         console.log("Data saved");
 
