@@ -9,6 +9,29 @@ router.post('/signup',async(req,res)=>{
     try{
         const data=req.body //data in body
 
+        //checking for admin
+        const adminUser=await user.findOne({role:'admin'})
+        if(data.role==='admin' && adminUser){
+            return res.status(400).json({
+                error:"admin user already exists"
+            })
+        }
+
+        //validating aadhar card for 12 digits
+        if(!/^\d{12}$/.test(data.aadharCardNumber)){
+            return res.status(400).json({
+                error:"Aadhar Card Number must be exactly 12 digits"
+            })
+        }
+
+        //checking for dup
+        const existingUser=await User.findOne({aadharCardNumber:data.aadharCardNumber})
+        if(existingUser){
+            return res.status(400).json({
+                error:"User with the same Aadhar Card Number already exists"
+            })
+        }
+
         //creating a new User
         const newUser=new User(data)
 
@@ -21,8 +44,7 @@ router.post('/signup',async(req,res)=>{
         }
         console.log(JSON.stringify(payload));
         const token=generateToken(payload)
-        console.log("Token is:",token);
-
+    
         res.status(200).json({response:response,token:token})
     }catch(e){
         console.log(e);
@@ -38,7 +60,13 @@ router.post('/login',async(req,res)=>{
         //extract the aadharCardNumber and pass from the body
         const {aadharCardNumber,password}=req.body  
 
-        //find the user by username
+        if(!aadharCardNumber || !password){
+            return res.status(400).json({
+                error:"Aadhar Card Number and password are required"
+            })
+        }
+
+        //find the user by aadharCardNumber
         const user=await User.findOne({aadharCardNumber:aadharCardNumber})
 
         //if user does not exist or pass is wrong return err
@@ -86,6 +114,12 @@ router.put("/profile/password",jwtAuthMiddleware,async(req,res)=>{
         const userId=req.user.id //extract the id from token
         const {currentPassword,newPassword}=req.body//extract the current and new password from the req body
 
+        //checking if currentPass and newPass both are there
+        if(!currentPassword || !newPassword){
+            return res.status(400).json({
+                error:"Both currentPassword and newPassword are required"
+            })
+        }
         //find the user by userID
         const user=await User.findById(userId)
 
