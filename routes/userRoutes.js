@@ -10,7 +10,7 @@ router.post('/signup',async(req,res)=>{
         const data=req.body //data in body
 
         //checking for admin
-        const adminUser=await user.findOne({role:'admin'})
+        const adminUser=await User.findOne({role:'admin'})
         if(data.role==='admin' && adminUser){
             return res.status(400).json({
                 error:"admin user already exists"

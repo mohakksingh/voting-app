@@ -39,3 +39,6 @@ Admin electoral management:
     /candidates:POST-Create a new electoral
     /candidates/:candidateId:PUT-Update an existing electoral
     /candidates/:candidateId:DELETE-Delete a electoral from the list
+
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWUyYzNhMmM1ZmFlYjc3NmNmMDU0ZCIsImlhdCI6MTcxMzI1MzU3OCwiZXhwIjoxNzEzMjgzNTc4fQ.ovgyqzsYnf_57cgTTS0BIbKYgun8t8puM_ZcBYEN5vs
