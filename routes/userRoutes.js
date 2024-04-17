@@ -95,9 +95,11 @@ router.post('/login',async(req,res)=>{
 //profile route
 router.get('/profile',jwtAuthMiddleware,async(req,res)=>{
     try{
-        const userData=req.user
-
+        const userData=req.user.userData
+        console.log(userData);
+        
         const userId=userData.id
+        console.log(userId);
         const user=await User.findById(userId)
         
         res.status(200).json({user})
@@ -111,7 +113,7 @@ router.get('/profile',jwtAuthMiddleware,async(req,res)=>{
 
 router.put("/profile/password",jwtAuthMiddleware,async(req,res)=>{
     try{
-        const userId=req.user.id //extract the id from token
+        const userId=req.user.userData.id //extract the id from token
         const {currentPassword,newPassword}=req.body//extract the current and new password from the req body
 
         //checking if currentPass and newPass both are there
