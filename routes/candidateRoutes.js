@@ -7,7 +7,6 @@ const Candidate = require('../models/candidate')
 const checkAdminRole=async(userID)=>{
     try{
         const user=await User.findById(userID)
-        console.log(user);
         if(user.role==='admin'){
             return true;
         }
@@ -21,13 +20,21 @@ const checkAdminRole=async(userID)=>{
 //POST route to add a candidate
 router.post('/', jwtAuthMiddleware, async (req, res) => {
     try {
-        if (!(await checkAdminRole(req.user.id))) {
+        if (!(await checkAdminRole(req.user.userData.id))) {
             // console.log(req.user.userData.id)
             return res.status(403).json({
                 message: "User does not have admin role"
             });
         }
+
         const data = req.body; // data in body  
+        const existingCandidate = await Candidate.findOne({ name: data.name }); // Check if candidate already exists
+
+        if (existingCandidate) {
+            return res.status(409).json({
+                message: "Candidate already exists"
+            });
+        }
 
         // creating a new candidate
         const newCandidate = new Candidate(data);
@@ -48,7 +55,7 @@ router.put("/:candidateID",jwtAuthMiddleware,async(req,res)=>{
     try{
         if(!(await checkAdminRole(req.user.id))){
             return res.status(403).json({
-                message:"User does not have admin role"
+                message:"User does not have admin role" 
             })
         }
 
@@ -112,7 +119,7 @@ router.post('/vote/:candidateID',jwtAuthMiddleware,async(req,res)=>{
     //user can only vote once
     
     candidateID=req.params.candidateID
-    userId=req.user.id
+    userId=req.user.userData.id
 
     try{
 
@@ -186,7 +193,7 @@ router.get('/vote/count',async(req,res)=>{
 
 router.get('/',async(req,res)=>{
     try{
-        const candidates=await candidate.find({},'name party -_id')
+        const candidates=await Candidate.find({},'name party -_id')
 
         res.status(200).json(candidates)
     }catch(e){
