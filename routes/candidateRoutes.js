@@ -21,7 +21,7 @@ const checkAdminRole=async(userID)=>{
 router.post('/', jwtAuthMiddleware, async (req, res) => {
     try {
         if (!(await checkAdminRole(req.user.userData.id))) {
-            // console.log(req.user.userData.id)
+            console.log(req.user.userData.id)
             return res.status(403).json({
                 message: "User does not have admin role"
             });
