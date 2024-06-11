@@ -13,7 +13,7 @@ const candidateRoutes=require('./routes/candidateRoutes')
 
 //use the routers
 app.use('api/user',userRoutes)
-app.use('api/candidate',candidateRoutes)
+app.use('api/candidates',candidateRoutes)
 
 app.listen(PORT,()=>{
     console.log("listening on port 3000");
